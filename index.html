@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>微购安卓输入法 · 开单 H5 真机体验开发协作说明</title>
+  <style>
+    :root{color-scheme:light;--ink:#202925;--muted:#68756e;--line:#dfe7e2;--green:#167548;--soft:#edf6f0}
+    *{box-sizing:border-box}body{margin:0;background:#f3f6f4;color:var(--ink);font-size:16px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.85}
+    main{max-width:960px;margin:40px auto;background:white;border:1px solid var(--line);border-radius:20px;padding:52px 58px}
+    .eyebrow{color:var(--green);font-size:13px;font-weight:700;letter-spacing:2px}h1{font-size:32px;line-height:1.4;margin:12px 0} .subtitle{color:var(--muted);margin:0 0 28px}
+    .lead{border-left:4px solid var(--green);background:var(--soft);padding:18px 22px;border-radius:0 10px 10px 0;margin:26px 0 32px}
+    h2{font-size:22px;margin:38px 0 14px;line-height:1.5}h3{font-size:17px;margin:22px 0 8px}p{margin:10px 0}ol,ul{padding-left:25px;margin:12px 0}li{padding-left:3px;margin:6px 0}
+    strong{font-weight:650} .flow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:20px 0}.step{padding:9px 14px;background:var(--soft);border:1px solid #d6e9dd;border-radius:8px;font-size:14px}.arrow{color:var(--muted)}
+    .table-wrap{overflow-x:auto;margin:18px 0;border:1px solid var(--line);border-radius:10px}table{border-collapse:collapse;width:100%;font-size:14px;text-align:left}th,td{padding:14px 16px;border-bottom:1px solid var(--line);vertical-align:top}th{background:#f4f7f5;font-weight:650}tr:last-child td{border-bottom:0}td:first-child{width:155px;font-weight:600}
+    code{font:13px/1.6 ui-monospace,SFMono-Regular,Consolas,monospace;background:#f1f4f2;border-radius:4px;padding:2px 5px;overflow-wrap:anywhere}.note{color:var(--muted);font-size:14px}.acceptance{border:1px solid #c9e1d2;background:var(--soft);padding:22px;border-radius:12px;margin:18px 0}.acceptance p{margin:0}.checklist{list-style:none;padding-left:0}.checklist li{position:relative;padding-left:24px}.checklist li:before{content:'□';position:absolute;left:0;color:var(--green)}
+    footer{border-top:1px solid var(--line);margin-top:38px;padding-top:18px;color:var(--muted);font-size:13px}
+    @media(max-width:640px){main{margin:0;border:0;border-radius:0;padding:28px 22px}h1{font-size:26px}h2{font-size:20px;margin-top:30px}th,td{padding:12px 10px}td:first-child{width:95px}.lead{padding:15px 16px}.flow{gap:7px}.step{padding:7px 10px}}
+    @media print{body{background:white;font-size:11pt}main{max-width:none;margin:0;border:0;padding:0}h1{font-size:24pt}h2{font-size:16pt;break-after:avoid}h3{break-after:avoid}tr,.lead,.acceptance{break-inside:avoid}.table-wrap{overflow:visible}footer{font-size:9pt}@page{size:A4;margin:18mm}}
+  </style>
+</head>
+<body><main>
+  <header>
+    <div class="eyebrow">微购安卓输入法 · 开发协作说明</div>
+    <h1>开单新版 H5 真机体验支持</h1>
+    <p class="subtitle">用于交互方案评审 · 方案确认后由开发以 Kuikly 实现正式版本</p>
+    <div class="lead"><strong>本次需要一个可持续更新、可独立拿手机体验的开单方案验证环境。</strong><br>保留现有输入法的真实能力，只替换开单页面；手机离开电脑后，也能随时点击“开单”进入新版。</div>
+  </header>
+
+  <section>
+    <h2>一、项目背景</h2>
+    <p>目前正在设计微购输入法“开单模块”的新版交互。希望先用可交互 H5，在真实安卓微信聊天环境中验证方案；确认后，再交给开发用 <strong>Kuikly</strong> 实现正式版本。</p>
+    <p>本阶段不重做整个输入法。现有打字、查商品、推商品、长按头像搜客户等能力继续使用原实现，仅替换开单页面。</p>
+    <p>根据目前提供的安卓源码，开单入口已经通过原生 WebView 加载 <code>#/new_order</code> 网页，可以沿用这个容器承载体验版。</p>
+  </section>
+
+  <section>
+    <h2>二、设计与体验目标</h2>
+    <p>用户在真实微信聊天中：</p>
+    <ol>
+      <li>正常使用微购输入法打字、查商品、推商品和搜客户。</li>
+      <li>点击输入法原有“开单”按钮，直接进入新版 H5。</li>
+      <li>体验选品、规格数量、客户、地址、金额、备注及模拟开单。</li>
+      <li>退出后回到原输入法，继续聊天。</li>
+      <li>离开电脑、关闭后重新打开、应用重启后，仍能再次进入新版。</li>
+    </ol>
+    <p><strong>体验不能依赖电脑服务、ADB、无线调试或每次手动修改网页地址。</strong>当前阶段允许使用模拟业务数据，不要求提交真实订单、收款或发送真实小票。</p>
+  </section>
+
+  <section>
+    <h2>三、建议实现方式</h2>
+    <p>采用 <strong>“现有输入法测试包＋固定 HTTPS 体验地址＋开单入口开关”</strong>。</p>
+    <div class="flow" aria-label="体验流程"><span class="step">真实微信聊天</span><span class="arrow">→</span><span class="step">现有微购输入法</span><span class="arrow">→</span><span class="step">原“开单”按钮</span><span class="arrow">→</span><span class="step">新版 H5</span></div>
+    <ul>
+      <li>H5 部署到手机可以独立访问的固定测试地址。</li>
+      <li>测试包增加开单体验开关，默认关闭。</li>
+      <li>开启后，原开单入口加载新版 H5。</li>
+      <li>关闭后，恢复原开单地址和原有参数逻辑。</li>
+      <li>保留 WebView 与原生键盘之间的接口。</li>
+      <li>后续交互调整只更新 H5，通常无需再次打包。</li>
+    </ul>
+    <p>如果现有工程已有可配置的网页入口或测试开关，请优先复用；目前尚未确认手机现有安装包具备这一能力。</p>
+  </section>
+
+  <section>
+    <h2>四、需要开发协助的事项</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th scope="col">协作项</th><th scope="col">具体需要</th></tr></thead>
+      <tbody>
+        <tr><td>确认接入位置</td><td>核对普通开单、客户卡片开单等入口，确认哪些需要统一切换体验地址。</td></tr>
+        <tr><td>提供固定入口</td><td>复用已有配置能力，或增加测试开关；不能只修改当前 WebView 的临时地址。</td></tr>
+        <tr><td>提供网页部署位置</td><td>协调一个手机可访问的 HTTPS 测试地址，以及后续更新方式；仅在公司内网可访问的地址不满足外出演示要求。</td></tr>
+        <tr><td>确认原生接口兼容</td><td>新地址下能正常调用中文键盘、接收输入与删除、关闭键盘、退出开单。</td></tr>
+        <tr><td>提供测试安装包</td><td>使用合适的测试构建和安装签名，明确能否保留现有登录及数据；若无法覆盖安装，请先给出安装方案。</td></tr>
+        <tr><td>协助一次真机验收</td><td>验证离开电脑后、反复退出进入、应用重启后的完整流程。</td></tr>
+      </tbody>
+    </table></div>
+    <h3>相关代码定位</h3>
+    <ul>
+      <li><code>WsxcUtils.getOrderUrl()</code> 及带 <code>customerAlbumId</code> 的重载：构造开单地址。</li>
+      <li><code>ExpandMenuView</code>：普通开单入口。</li>
+      <li><code>JavascriptHandler.appclienShare</code> 的 <code>type=500</code>：键盘控制接口。</li>
+      <li><code>WebViewJavascriptBridge</code> 的 <code>functionInJs</code>：输入、删除等回调。</li>
+    </ul>
+    <p>目前 H5 已通过现有接口在手机上完成中文输入、删除、备注保存和模拟开单。<strong>这不代表部署到新域名后已经验证通过</strong>，仍需要检查域名限制与桥接兼容性。</p>
+    <p class="note">已有一份入口补丁草稿，但使用的是电脑本地地址，且未完成安卓编译安装；只能作为参考，需要调整为固定测试地址。</p>
+  </section>
+
+  <section>
+    <h2>五、真实数据接入：请开发评估</h2>
+    <p><strong>不作为第一轮体验包的阻塞项。</strong>后续方案希望在开单选品中，直接展示“当前微信买家已推过的商品”。请协助确认：</p>
+    <ul>
+      <li>是否已有可靠的当前聊天对象标识？</li>
+      <li>长按头像搜到的客户结果，能否传给开单页面？</li>
+      <li>是否记录了推品的商品 ID、目标买家和操作结果？</li>
+      <li>是否已有接口可将这些数据提供给 H5？</li>
+    </ul>
+    <p>需要区分“发起分享”和“实际发送成功”，也不能仅凭昵称认定是同一个买家。</p>
+    <p>若暂时没有接口，本阶段可以用明确标注的演示数据验证交互；真实自动关联的接入需求单独记录，供后续 Kuikly 实现。</p>
+  </section>
+
+  <section>
+    <h2>六、分工与验收</h2>
+    <p><strong>设计侧与 Codex 负责：</strong>新版 H5、交互迭代、演示数据、页面状态说明，以及 Kuikly 实现交接材料。</p>
+    <p><strong>开发协助：</strong>固定入口、测试包、原生接口核对，以及测试地址部署协调。</p>
+    <div class="acceptance"><p><strong>核心验收场景</strong><br>手机断开电脑、使用移动网络后，打开微信 → 调出微购输入法 → 点击开单，能进入新版 H5；退出、重新进入以及应用重启后仍然有效，原有输入法能力正常。</p></div>
+    <ul class="checklist">
+      <li>离开电脑，手机联网可进入新版开单。</li>
+      <li>反复退出、重新进入以及应用重启后，仍可进入新版。</li>
+      <li>H5 内中文输入、删除、关闭键盘及退出开单正常。</li>
+      <li>原有打字、查商品、推商品、长按头像搜客户功能正常。</li>
+      <li>关闭体验开关后，可恢复原开单流程。</li>
+      <li>H5 更新后可加载新版，通常无需再次安装测试包。</li>
+    </ul>
+    <p><strong>本次不是要求提前开发 Kuikly 新开单，而是先提供一个可持续更新、可独立拿手机体验的方案验证环境。</strong></p>
+  </section>
+  <footer>本文为开发协作说明，不表示固定入口、新域名桥接或真实推品关联已经完成。HTML 为独立文件，无外部资源依赖，可直接转发、离线阅读或通过浏览器打印为 PDF。</footer>
+</main></body></html>
